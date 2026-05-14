@@ -202,7 +202,7 @@ ColQwen3.5 is based on [ColPali](https://arxiv.org/abs/2407.01449), extending Co
 
 | Architecture | Backbone | Example HF Models |
 | - | - | - |
-| `ColQwen3_5` | Qwen3.5 | `athrael-soju/colqwen3.5-4.5B` |
+| `ColQwen3_5` | Qwen3.5 | `athrael-soju/colqwen3.5-4.5B-v3` |
 
 Start the server:
 
