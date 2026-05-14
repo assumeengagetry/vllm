@@ -523,6 +523,72 @@ async def test_rerank_max_tokens_per_doc_validation(
     assert response.status_code == 400
     assert "max_tokens_per_doc must be a non-negative integer" in response.text
 
+@pytest.mark.asyncio
+async def test_rerank_max_tokens_per_query(
+    server: RemoteOpenAIServer,
+):
+    """Test that max_tokens_per_query actually reduces the token count."""
+    long_query = "What is the capital of France? " * 10
+    document = "The capital of France is Paris."
+
+   response_no_limit = requests.post(
+        server.url_for("rerank"),
+        json={
+            "model": MODEL_NAME,
+            "query": long_query,
+            "documents": [document],
+            "truncate_prompt_tokens": 99,
+        },
+    )
+    response_no_limit.raise_for_status()
+    rerank_no_limit = RerankResponse.model_validate(response_no_limit.json())
+
+   response_with_limit = requests.post(
+        server.url_for("rerank"),
+        json={
+            "model": MODEL_NAME,
+            "query": long_query,
+            "documents": [document],
+            "max_tokens_per_query": 10,
+        },
+    )
+    response_with_limit.raise_for_status()
+    rerank_with_limit = RerankResponse.model_validate(response_with_limit.json())
+
+    assert rerank_with_limit.usage.prompt_tokens < rerank_no_limit.usage.prompt_tokens
+
+@pytest.mark.asyncio
+async def test_rerank_max_tokens_per_query_validation(
+    server: RemoteOpenAIServer,
+):
+    """Test that max_tokens_per_query validation works correctly."""
+    query = "What is the capital of France?"
+    documents = ["The capital of France is Paris."]
+
+    # Test with max_tokens_per_query=0 (should succeed — means no truncation).
+    response = requests.post(
+        server.url_for("rerank"),
+        json={
+            "model": MODEL_NAME,
+            "query": query,
+            "documents": documents,
+            "max_tokens_per_query": 0,
+        },
+    )
+    response.raise_for_status()
+
+    # Test with invalid max_tokens_per_query (negative).
+    response = requests.post(
+        server.url_for("rerank"),
+        json={
+            "model": MODEL_NAME,
+            "query": query,
+            "documents": documents,
+            "max_tokens_per_query": -5,
+        },
+    )
+    assert response.status_code == 400
+    assert "max_tokens_per_query must be a non-negative integer" in response.text
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("task", ["embed", "token_embed", "token_classify", "plugin"])

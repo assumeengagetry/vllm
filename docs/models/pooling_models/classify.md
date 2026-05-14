@@ -143,7 +143,7 @@ For chat-like input (i.e. if `messages` is passed), the following parameters are
     ```python
     --8<-- "vllm/entrypoints/pooling/base/protocol.py:pooling-common-params"
     --8<-- "vllm/entrypoints/pooling/base/protocol.py:chat-params"
-    --8<-- "vllm/entrypoints/pooling/basprotocol.py:classify-params"
+    --8<-- "vllm/entrypoints/pooling/base/protocol.py:classify-params"
     ```
 
 these extra parameters are supported instead:
