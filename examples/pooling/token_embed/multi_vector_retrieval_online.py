@@ -7,7 +7,7 @@ Example online usage of Pooling API for multi vector retrieval.
 Run `vllm serve <model> --runner pooling`
 to start up the server in vLLM. e.g.
 
-vllm serve BAAI/bge-m3 --pooler-config.task token_embed
+vllm serve BAAI/bge-m3 --pooler-config.task token_embed --hf-overrides '{"architectures": ["BgeM3EmbeddingModel"]}'
 """
 
 import argparse

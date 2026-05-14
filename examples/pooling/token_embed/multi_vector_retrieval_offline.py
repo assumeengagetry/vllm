@@ -17,6 +17,7 @@ def parse_args():
         pooler_config=PoolerConfig(task="token_embed"),
         runner="pooling",
         enforce_eager=True,
+        hf_overrides={"architectures": ["BgeM3EmbeddingModel"]},
     )
     return parser.parse_args()
 
